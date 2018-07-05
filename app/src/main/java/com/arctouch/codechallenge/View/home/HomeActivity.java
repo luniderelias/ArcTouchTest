@@ -1,24 +1,25 @@
-package com.arctouch.codechallenge.home;
+package com.arctouch.codechallenge.View.home;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.arctouch.codechallenge.R;
-import com.arctouch.codechallenge.api.TmdbApi;
-import com.arctouch.codechallenge.base.BaseActivity;
-import com.arctouch.codechallenge.data.Cache;
-import com.arctouch.codechallenge.model.Genre;
-import com.arctouch.codechallenge.model.Movie;
+import com.arctouch.codechallenge.Rest.TmdbApi;
+import com.arctouch.codechallenge.Util.RestUtil;
+import com.arctouch.codechallenge.Model.Cache;
+import com.arctouch.codechallenge.Model.Genre;
+import com.arctouch.codechallenge.Model.Movie;
 
 import java.util.ArrayList;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class HomeActivity extends BaseActivity {
+public class HomeActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
@@ -31,7 +32,7 @@ public class HomeActivity extends BaseActivity {
         this.recyclerView = findViewById(R.id.recyclerView);
         this.progressBar = findViewById(R.id.progressBar);
 
-        api.upcomingMovies(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE, 1L, TmdbApi.DEFAULT_REGION)
+        RestUtil.api.upcomingMovies(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE, 1L, TmdbApi.DEFAULT_REGION)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
