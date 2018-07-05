@@ -1,4 +1,4 @@
-package com.arctouch.codechallenge.home;
+package com.arctouch.codechallenge.View.home;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.arctouch.codechallenge.R;
-import com.arctouch.codechallenge.model.Movie;
-import com.arctouch.codechallenge.util.MovieImageUrlBuilder;
+import com.arctouch.codechallenge.Model.Movie;
+import com.arctouch.codechallenge.Util.MovieImageUrlBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
