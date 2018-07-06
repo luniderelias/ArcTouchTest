@@ -19,9 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:importantForAccessibility="no"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_launcher_background" />
+            android:importantForAccessibility="no"/>
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -32,19 +30,15 @@
             <ImageView
                 android:id="@+id/posterImageView"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:importantForAccessibility="no"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_launcher_background"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_height="wrap_content"
+                android:importantForAccessibility="no"               app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
                 android:id="@+id/titleTextView"
                 android:layout_width="0dp"
+                android:text="title"
                 android:layout_height="wrap_content"
-                android:text="Titanic"
                 android:textAppearance="?android:textAppearanceLarge"
                 android:textColor="@color/white"
                 android:textStyle="bold"
@@ -54,20 +48,6 @@
                 app:layout_constraintStart_toEndOf="@+id/posterImageView"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/descriptionTextView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/titleTextView"
-                android:layout_toEndOf="@+id/posterImageView"
-                android:text="Descrjsfhsoafhakslçfpasfdhoadsfjasdkfljadskljsdkjfkldsjafksjadçkldfkjsdakfjadsklfldskjfskdajfksdjaflkçjsafkjaslfkjdsalkçdsfiption"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:textColor="@color/white"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/posterImageView"
-                app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
 
             <TextView
                 android:id="@+id/genresTextView"
@@ -79,10 +59,10 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:textStyle="bold"
+                android:text="genres"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/posterImageView"
-                app:layout_constraintTop_toBottomOf="@+id/descriptionTextView"
-                android:text="Drama, Romance, Thriller" />
+                app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
 
             <TextView
                 android:id="@+id/releaseDateTextView"
@@ -91,12 +71,26 @@
                 android:textColor="@color/white"
                 android:textAppearance="?android:textAppearanceSmall"
                 android:textStyle="italic"
+                android:text="date"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/posterImageView"
-                app:layout_constraintTop_toBottomOf="@+id/genresTextView"
-                android:text="1997" />
+                app:layout_constraintTop_toBottomOf="@+id/genresTextView" />
+
+            <TextView
+                android:id="@+id/descriptionTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/titleTextView"
+                android:layout_toEndOf="@+id/posterImageView"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textColor="@color/white"
+                android:text="description"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/posterImageView" />
+
         </android.support.constraint.ConstraintLayout>
     </LinearLayout>
 </ScrollView>

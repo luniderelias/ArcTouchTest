@@ -51,6 +51,7 @@ public class HomeActivity extends AppCompatActivity {
     MovieService movieService;
 
     List<Movie> movies = new ArrayList<>();
+    static Movie movie;
 
     public static final String[] permissions = {
             Manifest.permission.ACCESS_NETWORK_STATE,
@@ -71,7 +72,7 @@ public class HomeActivity extends AppCompatActivity {
 
                     recyclerView.setAdapter(new MovieAdapter(response.results,
                             item -> {
-                                Movie movie = item;
+                                movie = item;
                                 getFragmentManager()
                                         .beginTransaction()
                                         .replace(R.id.home_container,new MovieFragment_(),"MovieFragment")
