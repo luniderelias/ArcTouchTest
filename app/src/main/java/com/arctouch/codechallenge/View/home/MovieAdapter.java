@@ -3,6 +3,7 @@ package com.arctouch.codechallenge.View.home;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +49,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Picasso.get()
                 .load(holder.movieImageUrlBuilder.buildPosterUrl(movies.get(position).posterPath))
-                .fit()
                 .into(holder.posterImageView);
         holder.posterImageView.setOnClickListener(v -> listener.onItemClick(movies.get(position)));
     }
