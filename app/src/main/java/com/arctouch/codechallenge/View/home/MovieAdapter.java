@@ -21,8 +21,14 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
     private List<Movie> movies;
+    private final OnItemClickListener listener;
 
-    public MovieAdapter(List<Movie> movies) {
+    public interface OnItemClickListener {
+        void onItemClick(Movie item);
+    }
+
+    public MovieAdapter(List<Movie> movies, OnItemClickListener listener) {
+        this.listener = listener;
         this.movies = movies;
     }
 
@@ -44,6 +50,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                 .load(holder.movieImageUrlBuilder.buildPosterUrl(movies.get(position).posterPath))
                 .fit()
                 .into(holder.posterImageView);
+        holder.posterImageView.setOnClickListener(v -> listener.onItemClick(movies.get(position)));
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

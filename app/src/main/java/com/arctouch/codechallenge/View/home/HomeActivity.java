@@ -1,16 +1,19 @@
 package com.arctouch.codechallenge.View.home;
 
 import android.Manifest;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arctouch.codechallenge.R;
 import com.arctouch.codechallenge.Rest.TmdbApi;
@@ -25,6 +28,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.ViewById;
 
 import java.sql.SQLException;
@@ -46,6 +50,8 @@ public class HomeActivity extends AppCompatActivity {
     @Bean
     MovieService movieService;
 
+    List<Movie> movies = new ArrayList<>();
+
     public static final String[] permissions = {
             Manifest.permission.ACCESS_NETWORK_STATE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -60,16 +66,18 @@ public class HomeActivity extends AppCompatActivity {
 
         movieService.getMoviesRest()
                 .subscribe(response -> {
-                    for (Movie movie : response.results) {
-                        movie.genres = new ArrayList<>();
-                        for (Genre genre : Cache.getGenres()) {
-                            if (movie.genreIds.contains(genre.id)) {
-                                movie.genres.add(genre);
-                            }
-                        }
-                    }
+                    movies = response.results;
+                    saveMoviesToCache();
 
-                    recyclerView.setAdapter(new MovieAdapter(response.results));
+                    recyclerView.setAdapter(new MovieAdapter(response.results,
+                            item -> {
+                                Movie movie = item;
+                                getFragmentManager()
+                                        .beginTransaction()
+                                        .replace(R.id.home_container,new MovieFragment_(),"MovieFragment")
+                                        .addToBackStack("MovieFragment")
+                                        .commit();
+                            }));
                     progressBar.setVisibility(View.GONE);
                 }).isDisposed();
     }
@@ -81,5 +89,14 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
     }
 
-
+    private void saveMoviesToCache() {
+        for (Movie movie : movies) {
+            movie.genres = new ArrayList<>();
+            for (Genre genre : Cache.getGenres()) {
+                if (movie.genreIds.contains(genre.id)) {
+                    movie.genres.add(genre);
+                }
+            }
+        }
+    }
 }
