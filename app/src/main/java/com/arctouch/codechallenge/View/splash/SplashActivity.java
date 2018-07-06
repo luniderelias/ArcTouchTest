@@ -10,6 +10,7 @@ import com.arctouch.codechallenge.Rest.TmdbApi;
 import com.arctouch.codechallenge.Util.RestUtil;
 import com.arctouch.codechallenge.Model.Cache;
 import com.arctouch.codechallenge.View.home.HomeActivity;
+import com.arctouch.codechallenge.View.home.HomeActivity_;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -26,7 +27,7 @@ public class SplashActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
                     Cache.setGenres(response.genres);
-                    startActivity(new Intent(this, HomeActivity.class));
+                    startActivity(new Intent(this, HomeActivity_.class));
                     finish();
                 });
     }
