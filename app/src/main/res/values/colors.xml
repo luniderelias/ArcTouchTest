@@ -4,5 +4,7 @@
     <color name="colorPrimaryDark">#1B1B1B</color>
     <color name="colorAccent">@color/colorPrimary</color>
     <color name="white">#FFFFFF</color>
-    <color name="hint_color">#D0D0D0</color>
+    <color name="hint_color">#E0E0E0</color>
+    <color name="light_blue">#6699FF</color>
+    <color name="dark_blue">#3333FF</color>
 </resources>

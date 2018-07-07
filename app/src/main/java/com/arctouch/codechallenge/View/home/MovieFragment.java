@@ -1,9 +1,6 @@
 package com.arctouch.codechallenge.View.home;
 
 import android.app.Fragment;
-import android.content.res.Configuration;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,11 +14,6 @@ import com.squareup.picasso.Picasso;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @EFragment(R.layout.fragment_movie)
 public class MovieFragment extends Fragment {

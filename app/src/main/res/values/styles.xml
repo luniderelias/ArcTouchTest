@@ -6,4 +6,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="SearchEditTextStyle" parent="TextAppearance.AppCompat">
+        <!-- Hint color and label color in FALSE state -->
+        <item name="android:textColorHint">@color/light_blue</item>
+        <item name="android:textColor">@color/light_blue</item>
+        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
+        <item name="colorAccent">@color/light_blue</item>
+        <item name="colorControlNormal">@color/light_blue</item>
+        <item name="colorControlActivated">@color/light_blue</item>
+    </style>
+
 </resources>

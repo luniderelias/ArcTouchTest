@@ -16,7 +16,7 @@ import io.reactivex.schedulers.Schedulers;
 @EBean
 public class MovieService {
 
-    public synchronized Observable<MoviesResponse> getMoviesRest(Long page, String query)  {
+    public synchronized Observable<MoviesResponse> getMovies(Long page, String query)  {
         return RestUtil.api.searchMovies(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE, page, TmdbApi.DEFAULT_REGION,query)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
