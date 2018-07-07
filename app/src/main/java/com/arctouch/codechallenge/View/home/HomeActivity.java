@@ -5,8 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.arctouch.codechallenge.R;
 import com.arctouch.codechallenge.Service.MovieService;
@@ -20,6 +24,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.TextChange;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
@@ -32,8 +37,8 @@ public class HomeActivity extends AppCompatActivity {
     @ViewById(R.id.recyclerView)
     RecyclerView recyclerView;
 
-    @ViewById(R.id.progressBar)
-    ProgressBar progressBar;
+    @ViewById(R.id.searchEditText)
+    EditText searchEditText;
 
     @Bean
     MovieService movieService;
@@ -46,15 +51,19 @@ public class HomeActivity extends AppCompatActivity {
             Manifest.permission.INTERNET
     };
 
+    String query = "Lançamentos";
+
     List<Movie> movies = new ArrayList<>();
     private EndlessRecyclerViewScrollListener scrollListener;
     static Movie movie;
+    Long currentPage = 1L;
 
     @AfterViews
     void afterViews() {
         PermissionUtil.requestPermissions(this, permissions, 123);
+        onTextChange(searchEditText);
         configureRecyclerView();
-        getMovies(1L);
+        getMovies();
         setMoviesAdapter();
     }
 
@@ -72,15 +81,33 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView.setAdapter(movieAdapter);
     }
 
+    @UiThread
+    void onTextChange(EditText searchEditText) {
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override
+            public void afterTextChanged(Editable s) {
+                movieAdapter.setMovies(new ArrayList<>());
+                if(!s.toString().equals(""))
+                    query = s.toString();
+                query = query.replace(" ","+");
+                getMovies();
+            }
+        });
+    }
+
     @Background
-    void getMovies(Long page) {
-        movieService.getMoviesRest(page, "teste")
+    void getMovies() {
+        movieService.getMoviesRest(currentPage, query)
                 .onErrorResumeNext(response -> {
                 }).subscribe(response -> {
             saveMoviesToCache();
             movies = response.results;
             movieAdapter.addMovies(movies);
-            progressBar.setVisibility(View.GONE);
             movieAdapter.notifyDataSetChanged();
         }).isDisposed();
 
@@ -94,7 +121,8 @@ public class HomeActivity extends AppCompatActivity {
         scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(Integer page, int totalItemsCount, RecyclerView view) {
-                getMovies(page.longValue());
+                currentPage = page.longValue();
+                getMovies();
             }
         };
         recyclerView.addOnScrollListener(scrollListener);
