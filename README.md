@@ -1,4 +1,4 @@
-EN - # ArcTouchTest
+# EN - ArcTouchTest
 ArcTouch is an App developed to apply for Android Developer Job at ArcTouch Company.
 
 Requirements: https://github.com/luniderelias/ArcTouchTest/tree/master/Requirements
@@ -12,7 +12,7 @@ Apk: https://github.com/luniderelias/ArcTouchTest/Apk
 
 Screenshots: https://github.com/luniderelias/ArcTouchTest/tree/master/Screenshots
 
-PT - # ArcTouchTest
+# PT -  ArcTouchTest
 ArcTouch é um aplicativo desenvolvido para concorrer à vaga Desenvolvedor Android na empresa ArcTouch.
 
 Requisitos: https://github.com/luniderelias/ArcTouchTest/tree/master/Requirements
