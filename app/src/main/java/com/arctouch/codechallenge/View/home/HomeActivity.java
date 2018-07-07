@@ -87,14 +87,17 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
+
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             @Override
             public void afterTextChanged(Editable s) {
                 movieAdapter.setMovies(new ArrayList<>());
-                if(!s.toString().equals(""))
+                if (!s.toString().equals(""))
                     query = s.toString();
-                query = query.replace(" ","+");
+                query = query.replace(" ", "+");
                 getMovies();
             }
         });

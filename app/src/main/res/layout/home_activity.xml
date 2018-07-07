@@ -4,21 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark">
+    android:background="@color/colorPrimaryDark"
+    android:padding="8dp">
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/textInputEditText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:theme="@style/SearchEditTextStyle">
 
         <EditText
             android:id="@+id/searchEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:textAppearanceLarge"
             android:hint="@string/search"
-            android:textColor="@color/white"
-            android:textColorHint="@color/hint_color" />
+            android:inputType="text"
+            android:textColor="@color/light_blue"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.v7.widget.RecyclerView
@@ -32,7 +33,10 @@
         android:layout_below="@+id/textInputEditText"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         tools:itemCount="10"
-        tools:listitem="@layout/movie_item" />
+        tools:listitem="@layout/movie_item"
+        android:scrollbars="vertical"
+        android:scrollbarThumbVertical="@drawable/scrollbar"
+        android:fadeScrollbars="false"/>
 
     <FrameLayout
         android:id="@+id/home_container"
