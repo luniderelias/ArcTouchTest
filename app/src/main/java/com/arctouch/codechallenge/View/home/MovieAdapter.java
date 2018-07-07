@@ -3,6 +3,7 @@ package com.arctouch.codechallenge.View.home;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +17,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
-    private List<Movie> movies;
+    private List<Movie> movies = new ArrayList<>();
     private final OnItemClickListener listener;
 
     public interface OnItemClickListener {
@@ -29,6 +31,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     public MovieAdapter(List<Movie> movies, OnItemClickListener listener) {
         this.listener = listener;
+        this.movies.addAll(movies);
+    }
+
+    public void addMovies(List<Movie> movies){
+        this.movies.addAll(movies);
+    }
+
+    public void setMovies(List<Movie> movies){
         this.movies = movies;
     }
 
@@ -48,7 +58,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Picasso.get()
                 .load(holder.movieImageUrlBuilder.buildPosterUrl(movies.get(position).posterPath))
-                .fit()
                 .into(holder.posterImageView);
         holder.posterImageView.setOnClickListener(v -> listener.onItemClick(movies.get(position)));
     }
