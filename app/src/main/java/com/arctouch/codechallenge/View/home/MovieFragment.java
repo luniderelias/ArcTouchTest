@@ -49,9 +49,11 @@ public class MovieFragment extends Fragment {
     private void loadImages() {
         Picasso.get()
                 .load(movieImageUrlBuilder.buildPosterUrl(movie.posterPath))
+                .placeholder(R.drawable.movie_placeholder)
                 .into(posterImageView);
         Picasso.get()
                 .load(movieImageUrlBuilder.buildBackdropUrl(movie.backdropPath))
+                .placeholder(R.drawable.movie_placeholder)
                 .into(backdropImageView);
     }
 
