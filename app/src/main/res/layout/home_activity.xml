@@ -11,7 +11,8 @@
         android:id="@+id/textInputEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/SearchEditTextStyle">
+        android:theme="@style/SearchEditTextStyle"
+        android:layout_marginTop="8dp">
 
         <EditText
             android:id="@+id/searchEditText"

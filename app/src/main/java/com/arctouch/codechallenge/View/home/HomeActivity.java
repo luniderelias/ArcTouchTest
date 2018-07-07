@@ -1,22 +1,20 @@
 package com.arctouch.codechallenge.View.home;
 
 import android.Manifest;
+import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.arctouch.codechallenge.R;
 import com.arctouch.codechallenge.Service.MovieService;
+import com.arctouch.codechallenge.Util.ConnectivityUtil;
 import com.arctouch.codechallenge.Util.EndlessRecyclerViewScrollListener;
-import com.arctouch.codechallenge.Model.Cache;
-import com.arctouch.codechallenge.Model.Genre;
 import com.arctouch.codechallenge.Model.Movie;
 import com.arctouch.codechallenge.Util.PermissionUtil;
 
@@ -24,7 +22,6 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.TextChange;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
@@ -43,42 +40,27 @@ public class HomeActivity extends AppCompatActivity {
     @Bean
     MovieService movieService;
 
-    MovieAdapter movieAdapter;
-    public static final String[] permissions = {
-            Manifest.permission.ACCESS_NETWORK_STATE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.INTERNET
-    };
-
-    String query = "Lançamentos";
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     List<Movie> movies = new ArrayList<>();
-    private EndlessRecyclerViewScrollListener scrollListener;
     static Movie movie;
+    MovieAdapter movieAdapter;
+
     Long currentPage = 1L;
+    String query = "Lançamentos";
+
+    public static final String[] permissions = {
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_NETWORK_STATE
+    };
 
     @AfterViews
     void afterViews() {
         PermissionUtil.requestPermissions(this, permissions, 123);
         onTextChange(searchEditText);
         configureRecyclerView();
-        getMovies();
         setMoviesAdapter();
-    }
-
-    @UiThread
-    void setMoviesAdapter() {
-        movieAdapter = new MovieAdapter(movies,
-                item -> {
-                    movie = item;
-                    getFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.home_container, new MovieFragment_(), "MovieFragment")
-                            .addToBackStack("MovieFragment")
-                            .commit();
-                });
-        recyclerView.setAdapter(movieAdapter);
+        getMovies();
     }
 
     @UiThread
@@ -94,26 +76,14 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                movieAdapter.setMovies(new ArrayList<>());
-                if (!s.toString().equals(""))
+                if (!s.toString().equals("")) {
+                    movieAdapter.setMovies(new ArrayList<>());
                     query = s.toString();
-                query = query.replace(" ", "+");
-                getMovies();
+                    query = query.replace(" ", "+");
+                    getMovies();
+                }
             }
         });
-    }
-
-    @Background
-    void getMovies() {
-        movieService.getMoviesRest(currentPage, query)
-                .onErrorResumeNext(response -> {
-                }).subscribe(response -> {
-            saveMoviesToCache();
-            movies = response.results;
-            movieAdapter.addMovies(movies);
-            movieAdapter.notifyDataSetChanged();
-        }).isDisposed();
-
     }
 
     private void configureRecyclerView() {
@@ -131,14 +101,43 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView.addOnScrollListener(scrollListener);
     }
 
-    private void saveMoviesToCache() {
-        for (Movie movie : movies) {
-            movie.genres = new ArrayList<>();
-            for (Genre genre : Cache.getGenres()) {
-                if (movie.genreIds.contains(genre.id)) {
-                    movie.genres.add(genre);
-                }
-            }
-        }
+    void setMoviesAdapter() {
+        movieAdapter = new MovieAdapter(movies,
+                item -> {
+                    movie = item;
+                    getFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.home_container, new MovieFragment_(), "MovieFragment")
+                            .addToBackStack("MovieFragment")
+                            .commit();
+                });
+        recyclerView.setAdapter(movieAdapter);
     }
+
+    @Background
+    void getMovies() {
+        checkConnectivity();
+        movieService.getMovies(currentPage, query)
+                .onErrorResumeNext(response -> {
+                }).subscribe(response -> updateMoviesList(response.results)).isDisposed();
+    }
+
+    private void updateMoviesList(List<Movie> movies) {
+        this.movies = movies;
+        movieAdapter.addMovies(movies);
+        movieAdapter.notifyDataSetChanged();
+    }
+
+    @UiThread
+    void checkConnectivity() {
+        if (!ConnectivityUtil.hasNetworkConnection(this))
+            Snackbar.make(recyclerView,
+                    getString(R.string.not_connected),
+                    Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.connect, view -> startActivityForResult(new Intent(
+                            android.provider.Settings.ACTION_SETTINGS), 0))
+                    .setActionTextColor(getResources()
+                            .getColor(R.color.light_blue)).show();
+    }
+
 }
