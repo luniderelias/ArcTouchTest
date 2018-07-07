@@ -2,19 +2,14 @@ package com.arctouch.codechallenge.View.home;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.arctouch.codechallenge.R;
 import com.arctouch.codechallenge.Model.Movie;
 import com.arctouch.codechallenge.Util.MovieImageUrlBuilder;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -58,6 +53,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Picasso.get()
                 .load(holder.movieImageUrlBuilder.buildPosterUrl(movies.get(position).posterPath))
+                .placeholder(R.drawable.movie_placeholder)
                 .into(holder.posterImageView);
         holder.posterImageView.setOnClickListener(v -> listener.onItemClick(movies.get(position)));
     }

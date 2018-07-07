@@ -2,6 +2,8 @@ package com.arctouch.codechallenge.View.home;
 
 import android.Manifest;
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -45,9 +47,13 @@ public class HomeActivity extends AppCompatActivity {
     List<Movie> movies = new ArrayList<>();
     static Movie movie;
     MovieAdapter movieAdapter;
+    public final static String LIST_STATE_KEY = "recycler_list_state";
+    Parcelable listState;
+    LinearLayoutManager layoutManager;
 
     Long currentPage = 1L;
-    String query = "Lançamentos";
+    private static final String INITIAL_QUERY = "A";
+    String query = INITIAL_QUERY;
 
     public static final String[] permissions = {
             Manifest.permission.INTERNET,
@@ -57,10 +63,35 @@ public class HomeActivity extends AppCompatActivity {
     @AfterViews
     void afterViews() {
         PermissionUtil.requestPermissions(this, permissions, 123);
-        onTextChange(searchEditText);
+        fillQuery();
         configureRecyclerView();
+        onTextChange(searchEditText);
         setMoviesAdapter();
         getMovies();
+    }
+
+    private void fillQuery() {
+        if (!searchEditText.getText().toString().equals("")) {
+            query = searchEditText.getText().toString();
+            query = query.replace(" ", "+");
+        } else {
+            query = INITIAL_QUERY;
+        }
+    }
+
+    private void configureRecyclerView() {
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new GridLayoutManager(
+                getApplicationContext(), 2);
+        recyclerView.setLayoutManager(layoutManager);
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(Integer page, int totalItemsCount, RecyclerView view) {
+                currentPage = page.longValue();
+                getMovies();
+            }
+        };
+        recyclerView.addOnScrollListener(scrollListener);
     }
 
     @UiThread
@@ -76,29 +107,11 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (!s.toString().equals("")) {
-                    movieAdapter.setMovies(new ArrayList<>());
-                    query = s.toString();
-                    query = query.replace(" ", "+");
-                    getMovies();
-                }
-            }
-        });
-    }
-
-    private void configureRecyclerView() {
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager layoutManager = new GridLayoutManager(
-                getApplicationContext(), 2);
-        recyclerView.setLayoutManager(layoutManager);
-        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(Integer page, int totalItemsCount, RecyclerView view) {
-                currentPage = page.longValue();
+                movieAdapter.setMovies(new ArrayList<>());
+                fillQuery();
                 getMovies();
             }
-        };
-        recyclerView.addOnScrollListener(scrollListener);
+        });
     }
 
     void setMoviesAdapter() {
@@ -140,4 +153,20 @@ public class HomeActivity extends AppCompatActivity {
                             .getColor(R.color.light_blue)).show();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+        listState = recyclerView.getLayoutManager().onSaveInstanceState();
+        state.putParcelable(LIST_STATE_KEY, listState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle state) {
+        super.onRestoreInstanceState(state);
+        if (state != null) {
+            query = searchEditText.getText().toString();
+            getMovies();
+            listState = state.getParcelable(LIST_STATE_KEY);
+        }
+    }
 }
