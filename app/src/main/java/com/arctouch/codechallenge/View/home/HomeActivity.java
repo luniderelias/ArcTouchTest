@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
+import com.arctouch.codechallenge.Model.Cache;
 import com.arctouch.codechallenge.R;
 import com.arctouch.codechallenge.Service.MovieService;
 import com.arctouch.codechallenge.Util.ConnectivityUtil;
@@ -67,6 +68,7 @@ public class HomeActivity extends AppCompatActivity {
         configureRecyclerView();
         onTextChange(searchEditText);
         setMoviesAdapter();
+        getGenres();
         getMovies();
     }
 
@@ -125,6 +127,15 @@ public class HomeActivity extends AppCompatActivity {
                             .commit();
                 });
         recyclerView.setAdapter(movieAdapter);
+    }
+
+    @Background
+    void getGenres(){
+        movieService.getGenres()
+                .onErrorResumeNext(response -> {
+        }).subscribe(response -> {
+            Cache.setGenres(response.genres);
+        }).isDisposed();
     }
 
     @Background
