@@ -1,8 +1,9 @@
-package com.arctouch.codechallenge.api;
+package com.arctouch.codechallenge.Rest;
 
-import com.arctouch.codechallenge.model.GenreResponse;
-import com.arctouch.codechallenge.model.Movie;
-import com.arctouch.codechallenge.model.UpcomingMoviesResponse;
+import com.arctouch.codechallenge.Model.GenreResponse;
+import com.arctouch.codechallenge.Model.Movie;
+import com.arctouch.codechallenge.Model.MoviesResponse;
+import com.arctouch.codechallenge.Model.UpcomingMoviesResponse;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
@@ -28,6 +29,15 @@ public interface TmdbApi {
             @Query("language") String language,
             @Query("page") Long page,
             @Query("region") String region
+    );
+
+    @GET("search/movie")
+    Observable<MoviesResponse> searchMovies(
+            @Query("api_key") String apiKey,
+            @Query("language") String language,
+            @Query("page") Long page,
+            @Query("region") String region,
+            @Query("query") String query
     );
 
     @GET("movie/{id}")
