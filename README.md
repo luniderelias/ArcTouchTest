@@ -8,7 +8,7 @@ Project: https://github.com/luniderelias/ArcTouchTest
 It has a Movie List available at The Movie Database (TMDb), with and Search Input. 
 Movies Details can be seen by selecting from Movie List. 
 
-Apk: https://github.com/luniderelias/ArcTouchTest/Apk
+Apk: https://github.com/luniderelias/ArcTouchTest/tree/master/Apk
 
 Screenshots: https://github.com/luniderelias/ArcTouchTest/tree/master/Screenshots
 
@@ -22,6 +22,6 @@ Projeto: https://github.com/luniderelias/ArcTouchTest
 O Aplicativo contém uma Lista de Filmes disponíveis em The Movie Database (TMDb) e um campo de busca. 
 Detalhes dos Filmes podem ser visualizados ao clicar em um item da Lista.
 
-Apk: https://github.com/luniderelias/ArcTouchTest/Apk
+Apk: https://github.com/luniderelias/ArcTouchTest/tree/master/Apk
 
 Screenshots: https://github.com/luniderelias/ArcTouchTest/tree/master/Screenshots
