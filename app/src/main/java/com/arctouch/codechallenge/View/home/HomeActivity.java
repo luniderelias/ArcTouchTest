@@ -1,42 +1,30 @@
 package com.arctouch.codechallenge.View.home;
 
 import android.Manifest;
-import android.app.FragmentManager;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.arctouch.codechallenge.R;
-import com.arctouch.codechallenge.Rest.TmdbApi;
 import com.arctouch.codechallenge.Service.MovieService;
-import com.arctouch.codechallenge.Util.PermissionUtil;
-import com.arctouch.codechallenge.Util.RestUtil;
+import com.arctouch.codechallenge.Util.EndlessRecyclerViewScrollListener;
 import com.arctouch.codechallenge.Model.Cache;
 import com.arctouch.codechallenge.Model.Genre;
 import com.arctouch.codechallenge.Model.Movie;
+import com.arctouch.codechallenge.Util.PermissionUtil;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ItemClick;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 @EActivity(R.layout.home_activity)
 public class HomeActivity extends AppCompatActivity {
@@ -50,9 +38,7 @@ public class HomeActivity extends AppCompatActivity {
     @Bean
     MovieService movieService;
 
-    List<Movie> movies = new ArrayList<>();
-    static Movie movie;
-
+    MovieAdapter movieAdapter;
     public static final String[] permissions = {
             Manifest.permission.ACCESS_NETWORK_STATE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -60,34 +46,58 @@ public class HomeActivity extends AppCompatActivity {
             Manifest.permission.INTERNET
     };
 
+    List<Movie> movies = new ArrayList<>();
+    private EndlessRecyclerViewScrollListener scrollListener;
+    static Movie movie;
+
     @AfterViews
     void afterViews() {
-        configureRecyclerView();
         PermissionUtil.requestPermissions(this, permissions, 123);
+        configureRecyclerView();
+        getMovies(1L);
+        setMoviesAdapter();
+    }
 
-        movieService.getMoviesRest()
-                .subscribe(response -> {
-                    movies = response.results;
-                    saveMoviesToCache();
+    @UiThread
+    void setMoviesAdapter() {
+        movieAdapter = new MovieAdapter(movies,
+                item -> {
+                    movie = item;
+                    getFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.home_container, new MovieFragment_(), "MovieFragment")
+                            .addToBackStack("MovieFragment")
+                            .commit();
+                });
+        recyclerView.setAdapter(movieAdapter);
+    }
 
-                    recyclerView.setAdapter(new MovieAdapter(response.results,
-                            item -> {
-                                movie = item;
-                                getFragmentManager()
-                                        .beginTransaction()
-                                        .replace(R.id.home_container,new MovieFragment_(),"MovieFragment")
-                                        .addToBackStack("MovieFragment")
-                                        .commit();
-                            }));
-                    progressBar.setVisibility(View.GONE);
-                }).isDisposed();
+    @Background
+    void getMovies(Long page) {
+        movieService.getMoviesRest(page, "teste")
+                .onErrorResumeNext(response -> {
+                }).subscribe(response -> {
+            saveMoviesToCache();
+            movies = response.results;
+            movieAdapter.addMovies(movies);
+            progressBar.setVisibility(View.GONE);
+            movieAdapter.notifyDataSetChanged();
+        }).isDisposed();
+
     }
 
     private void configureRecyclerView() {
         recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(
+        LinearLayoutManager layoutManager = new GridLayoutManager(
                 getApplicationContext(), 2);
         recyclerView.setLayoutManager(layoutManager);
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(Integer page, int totalItemsCount, RecyclerView view) {
+                getMovies(page.longValue());
+            }
+        };
+        recyclerView.addOnScrollListener(scrollListener);
     }
 
     private void saveMoviesToCache() {

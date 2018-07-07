@@ -42,6 +42,7 @@ dependencies {
     annotationProcessor "org.androidannotations:androidannotations:$AAVersion"
     implementation "org.androidannotations:androidannotations-api:$AAVersion"
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.android.support:design:27.1.1'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'

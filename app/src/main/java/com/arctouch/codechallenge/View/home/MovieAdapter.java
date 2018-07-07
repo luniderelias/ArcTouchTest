@@ -17,11 +17,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
-    private List<Movie> movies;
+    private List<Movie> movies = new ArrayList<>();
     private final OnItemClickListener listener;
 
     public interface OnItemClickListener {
@@ -30,7 +31,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     public MovieAdapter(List<Movie> movies, OnItemClickListener listener) {
         this.listener = listener;
-        this.movies = movies;
+        this.movies.addAll(movies);
+    }
+
+    public void addMovies(List<Movie> movies){
+        this.movies.addAll(movies);
     }
 
     @NonNull
