@@ -1,5 +1,6 @@
 package com.arctouch.codechallenge.View.home;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,14 +20,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     private List<Movie> movies = new ArrayList<>();
     private final OnItemClickListener listener;
+    private Context context;
 
     public interface OnItemClickListener {
         void onItemClick(Movie item);
     }
 
-    public MovieAdapter(List<Movie> movies, OnItemClickListener listener) {
+    public MovieAdapter(Context context, List<Movie> movies, OnItemClickListener listener) {
         this.listener = listener;
         this.movies.addAll(movies);
+        this.context = context;
     }
 
     public void addMovies(List<Movie> movies){
@@ -51,11 +54,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Picasso.get()
-                .load(holder.movieImageUrlBuilder.buildPosterUrl(movies.get(position).posterPath))
-                .placeholder(R.drawable.movie_placeholder)
-                .into(holder.posterImageView);
-        holder.posterImageView.setOnClickListener(v -> listener.onItemClick(movies.get(position)));
+        try {
+            Picasso.with(context)
+                    .load(holder.movieImageUrlBuilder.buildPosterUrl(movies.get(position).posterPath))
+                    .placeholder(R.drawable.movie_placeholder)
+                    .into(holder.posterImageView);
+            holder.posterImageView.setOnClickListener(v -> listener.onItemClick(movies.get(position)));
+        }catch (IllegalStateException e){
+            e.printStackTrace();
+        }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

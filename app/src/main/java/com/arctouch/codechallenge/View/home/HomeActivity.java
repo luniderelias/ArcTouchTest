@@ -117,7 +117,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     void setMoviesAdapter() {
-        movieAdapter = new MovieAdapter(movies,
+        movieAdapter = new MovieAdapter(this,movies,
                 item -> {
                     movie = item;
                     getFragmentManager()
